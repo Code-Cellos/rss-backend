@@ -40,3 +40,5 @@ module.exports = {
     });
   },
 };
+
+mongodb+srv://test:test1@cluster0.9cvn2fk.mongodb.net/?retryWrites=true&w=majority
