@@ -5,15 +5,13 @@ const express = require('express');
 const app = express();
 
 require('dotenv').config();
-let Parser = require('rss-parser');
-let parser = new Parser();
-const cors = require('cors');
+// const cors = require('cors');
 
 let PORT = process.env.PORT || 3002;
 
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB);
-const UserObject = require('./userModel');
+// const UserObject = require('./userModel');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -21,14 +19,24 @@ db.once('open', function () {
   console.log('Mongoose is connected');
 });
 
+// Handlers
+const createUserData = require('./handlers/createUserData');
+const addFeed = require('./parser');
+
 // Esoteric Resources
 const errorHandler = require('./errorHandlers/500.js');
 const notFound = require('./errorHandlers/404.js');
 
 
+// REQUIRE ROUTES
+// const authRouter = require('./routes/auth.js');
+// const alphaRoutes = require('./routes/alpha.js')
+// const bravoRoutes = require('./routes/bravo.js')
+
+
 app.use(express.json());
-// app.use(logger);
 app.use(express.urlencoded({ extended: true }));
+
 
 
 const createUserData = async (req, res, next) => {
@@ -77,6 +85,10 @@ const addFeed = async (username) => {
   }
 }
 
+// Routes
+// app.use(authRouter);
+
+
 addFeed('andrew');
 
 app.post('/userData', createUserData);
@@ -88,14 +100,11 @@ app.use(errorHandler);
 module.exports = {
   server: app,
   start: () => {
-    if (!PORT) { throw new error ('Missing PORT'); }
+    if (!PORT) {
+      throw new error('Missing PORT');
+    }
     app.listen(PORT, () => {
       console.log(`Server is up on ${PORT}`);
     });
-  },
+  }
 };
-
-// module.exports = {
-//   server: app,
-//   start: () => app.listen(PORT, () => console.log('listening on port', PORT)),
-// };
