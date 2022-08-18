@@ -10,7 +10,6 @@ let PORT = process.env.PORT || 3002;
 
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB);
-// const UserObject = require('./userModel');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -21,11 +20,13 @@ db.once('open', function () {
 // Handlers
 const createUserData = require('./handlers/createUserData');
 const addFeed = require('./handlers/parser');
+const receiveUrlFromFrontEnd = require('./handlers/getFeeds');
 
 // Esoteric Resources
 const errorHandler = require('./errorHandlers/500.js');
 const notFound = require('./errorHandlers/404.js');
-const getFeeds = require('./handlers/getFeeds');
+const { getFeeds, setUrl } = require('./handlers/getFeeds');
+// const setUrl = require('./handlers/setUrl');
 
 // REQUIRE ROUTES
 // const authRouter = require('./routes/auth.js');
@@ -33,16 +34,12 @@ const getFeeds = require('./handlers/getFeeds');
 // const bravoRoutes = require('./routes/bravo.js')
 
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-// app.use(authRouter);
-
-addFeed('andrew');
+app.post('/feeds', setUrl);
+app.get('/feeds', getFeeds);
 
 app.post('/userData', createUserData);
-app.get('/feeds', getFeeds);
 
 // Catchalls
 app.use('*', notFound);
