@@ -25,22 +25,11 @@ db.once('open', function () {
 const errorHandler = require('./errorHandlers/500.js');
 const notFound = require('./errorHandlers/404.js');
 
-// REQUIRE ROUTES
-// const authRouter = require('./routes/auth.js');
-// const alphaRoutes = require('./routes/alpha.js')
-// const bravoRoutes = require('./routes/bravo.js')
-
-// const logger = require('./middleware/logger.js');
-
 
 app.use(express.json());
 // app.use(logger);
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-// app.use(authRouter);
-// app.use('/api/alpha', alphaRoutes);
-// app.use('/api/bravo', bravoRoutes);
 
 const createUserData = async (req, res, next) => {
   try {
