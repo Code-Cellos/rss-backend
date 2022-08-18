@@ -27,16 +27,67 @@ const addFeed = require('./parser');
 const errorHandler = require('./errorHandlers/500.js');
 const notFound = require('./errorHandlers/404.js');
 
+
 // REQUIRE ROUTES
 // const authRouter = require('./routes/auth.js');
 // const alphaRoutes = require('./routes/alpha.js')
 // const bravoRoutes = require('./routes/bravo.js')
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
+const createUserData = async (req, res, next) => {
+  try {
+    let user = req.body;
+    let response = await UserObject.create(user);
+    res.status(200).send(response);
+  } catch (e) {
+    console.log(e.messsage);
+  }
+};
+
+// const addFeed = async (req, res, next) => {
+//   try {
+//     let feed = req.body;
+//     let user = await this.findOne( { where: { }})
+//   } catch (e) {
+//     console.log(e.messsage);
+//   }
+// }
+
+const parseFeed = async () => {
+  let feed = await parser.parseURL('https://www.reddit.com/r/news/.rss');
+  // console.log('TITLE', feed.title);
+  // console.log('FEED', feed);
+  // feed.items.forEach(item => {
+  //   console.log(item.title, item.link);
+  // });
+
+  return feed;
+};
+
+const addFeed = async (username) => {
+  // let { Username } = username;
+  try {
+    let account = await UserObject.findOne( { Username: username });
+    console.log('ACCOUNT', account);
+    let newFeed = await parseFeed();
+    // console.log('FEED', feed);
+    // account.feedsArray.push(feed);
+    // console.log('FEED', newFeed);
+    console.log('ID', account._id);
+    await UserObject.findByIdAndUpdate(account._id, {$push: {feedsArray: newFeed}});
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 // Routes
 // app.use(authRouter);
+
 
 addFeed('andrew');
 
